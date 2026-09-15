@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Currículum · Ingeniero de Software</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     TOKENS — paleta "plano técnico" (blueprint de ingeniería)
+     ============================================================ */
+  :root{
+    --azul-plano:#0e3a5f;      /* fondo principal */
+    --azul-panel:#0a2d4a;      /* paneles / nav */
+    --azul-linea:#8ecae6;      /* líneas de cuadrícula y trazos */
+    --papel:#f5f7fa;           /* texto principal, alto contraste */
+    --slate:#8fb1cf;           /* texto secundario */
+    --acento:#f4a300;          /* único acento cálido, uso restringido */
+    --verde-ok:#8fd6a8;        /* uso puntual: estado / disponibilidad */
+    --radio:2px;
+    --max:1080px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background:var(--azul-plano);
+    background-image:
+      linear-gradient(var(--azul-linea) 1px, transparent 1px),
+      linear-gradient(90deg, var(--azul-linea) 1px, transparent 1px);
+    background-size:40px 40px;
+    background-attachment:fixed;
+    background-blend-mode:overlay;
+    background-color:var(--azul-plano);
+    opacity:1;
+    color:var(--papel);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+  }
+  /* la cuadrícula real, con opacidad baja aplicada vía pseudo-elemento para no afectar el resto */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(142,202,230,.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(142,202,230,.08) 1px, transparent 1px);
+    background-size:40px 40px;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  h1,h2,h3,.mono{ font-family:'Space Mono', monospace; }
+
+  a{ color:var(--azul-linea); }
+
+  .wrap{
+    max-width:var(--max);
+    margin:0 auto;
+    padding:0 28px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* ============================================================
+     NAV — barra fija estilo "cajetín" de plano técnico
+     ============================================================ */
+  #nav{
+    position:fixed; top:0; left:0; right:0;
+    z-index:100;
+    background:rgba(10,45,74,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--azul-linea);
+  }
+  #nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:64px;
+  }
+  #nav .marca{
+    font-family:'Space Mono', monospace;
+    font-size:14px;
+    letter-spacing:.02em;
+  }
+  #nav .marca span{ color:var(--acento); }
+
+  #nav ul{
+    list-style:none;
+    display:flex; gap:26px;
+    margin:0; padding:0;
+  }
+  #nav a{
+    color:var(--slate);
+    text-decoration:none;
+    font-size:14px;
+    padding:6px 2px;
+    border-bottom:2px solid transparent;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  #nav a:hover, #nav a.activo{
+    color:var(--papel);
+    border-color:var(--acento);
+  }
+
+  #nav-toggle{
+    display:none;
+    background:none; border:1px solid var(--azul-linea);
+    color:var(--papel);
+    width:38px; height:38px;
+    cursor:pointer;
+    font-family:'Space Mono', monospace;
+  }
+
+  /* ============================================================
+     Bloque genérico "panel de plano" con esquinas técnicas
+     ============================================================ */
+  .panel{
+    position:relative;
+    border:1px solid rgba(142,202,230,.35);
+    background:rgba(10,45,74,.35);
+    padding:32px;
+  }
+  .panel::before, .panel::after,
+  .panel .esq-br, .panel .esq-bi{
+    content:""; position:absolute; width:14px; height:14px;
+    border-color:var(--azul-linea); border-style:solid; border-width:0;
+  }
+  .panel::before{ top:-1px; left:-1px; border-top-width:2px; border-left-width:2px; }
+  .panel::after{ top:-1px; right:-1px; border-top-width:2px; border-right-width:2px; }
+  .panel .esq-br{ bottom:-1px; right:-1px; border-bottom-width:2px; border-right-width:2px; }
+  .panel .esq-bi{ bottom:-1px; left:-1px; border-bottom-width:2px; border-left-width:2px; }
+
+  .etiqueta{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    color:var(--azul-linea);
+    letter-spacing:.04em;
+  }
+
+  section{ padding:110px 0 40px; position:relative; z-index:1; scroll-margin-top:70px; }
+  section h2{
+    font-size:22px;
+    margin:0 0 34px;
+    display:flex; align-items:baseline; gap:14px;
+  }
+  section h2 small{
+    font-size:12px; color:var(--slate); font-weight:400; font-family:'Inter',sans-serif;
+  }
+  section h2::after{
+    content:""; flex:1; height:1px; background:rgba(142,202,230,.35);
+  }
+
+  /* ============================================================
+     HERO — "cajetín" de título con foto y ficha técnica
+     ============================================================ */
+  #inicio{ padding-top:150px; }
+  .hero{
+    display:grid;
+    grid-template-columns:200px 1fr;
+    gap:40px;
+    align-items:start;
+  }
+
+  /* --- Espacio para tu fotografía ---
+     Reemplaza el contenido de #foto-marco: pon una etiqueta <img>
+     con tu foto (recomendado: cuadrada, mínimo 400x400px) dentro,
+     por ejemplo:
+     <img src="tu-foto.jpg" alt="Foto de [Tu Nombre]">
+  */
+  .foto-marco{
+    position:relative;
+    width:100%;
+    aspect-ratio:1/1;
+    border:1px solid var(--azul-linea);
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(142,202,230,.06);
+    overflow:hidden;
+  }
+  .foto-marco img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .foto-marco .placeholder{
+    text-align:center; color:var(--slate); font-family:'Space Mono',monospace; font-size:11px;
+    padding:16px; line-height:1.7;
+  }
+  .foto-marco .placeholder svg{ width:46px; height:46px; margin-bottom:10px; opacity:.6; }
+  .foto-marco::before, .foto-marco::after{
+    content:""; position:absolute; width:12px; height:12px;
+    border-color:var(--acento); border-style:solid; border-width:0;
+  }
+  .foto-marco::before{ top:6px; left:6px; border-top-width:2px; border-left-width:2px; }
+  .foto-marco::after{ bottom:6px; right:6px; border-bottom-width:2px; border-right-width:2px; }
+
+  .hero-info .etiqueta{ margin-bottom:8px; display:block; }
+  .hero-info h1{
+    font-size:clamp(28px,4vw,42px);
+    margin:0 0 6px;
+    color:var(--papel);
+  }
+  .hero-info .rol{
+    color:var(--acento);
+    font-family:'Space Mono', monospace;
+    font-size:15px;
+    margin:0 0 18px;
+  }
+  .hero-info p.pitch{
+    max-width:60ch;
+    color:var(--slate);
+    margin:0 0 26px;
+  }
+
+  .ficha{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    border:1px solid rgba(142,202,230,.35);
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+  }
+  .ficha div{
+    padding:10px 14px;
+    border-right:1px solid rgba(142,202,230,.35);
+    border-bottom:1px solid rgba(142,202,230,.35);
+  }
+  .ficha div:nth-child(3n){ border-right:none; }
+  .ficha strong{ display:block; color:var(--slate); font-weight:400; font-size:10px; margin-bottom:4px; }
+  .ficha span{ color:var(--papel); }
+
+  .botones{ margin-top:26px; display:flex; gap:14px; flex-wrap:wrap; }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:11px 20px;
+    font-family:'Space Mono', monospace;
+    font-size:13px;
+    text-decoration:none;
+    border:1px solid var(--azul-linea);
+    color:var(--papel);
+    transition:background .15s ease, color .15s ease;
+  }
+  .btn.primario{ background:var(--acento); border-color:var(--acento); color:#1a1300; }
+  .btn.primario:hover{ background:#ffb733; }
+  .btn:not(.primario):hover{ background:rgba(142,202,230,.12); }
+
+  /* ============================================================
+     SOBRE MÍ
+     ============================================================ */
+  .sobre-mi p{ color:var(--slate); max-width:70ch; }
+  .sobre-mi p strong{ color:var(--papel); font-weight:600; }
+
+  /* ============================================================
+     HABILIDADES — barras tipo escala/regla
+     ============================================================ */
+  .habilidades-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:34px 50px;
+  }
+  .grupo-hab h3{
+    font-size:13px; color:var(--acento); margin:0 0 16px;
+    font-weight:400; letter-spacing:.03em;
+  }
+  .barra{ margin-bottom:16px; }
+  .barra .fila-top{
+    display:flex; justify-content:space-between;
+    font-size:13px; margin-bottom:6px;
+  }
+  .barra .fila-top span:last-child{ color:var(--slate); font-family:'Space Mono',monospace; font-size:11px; }
+  .escala{
+    position:relative;
+    height:8px;
+    background:repeating-linear-gradient(
+      90deg, rgba(142,202,230,.25) 0 1px, transparent 1px 10%
+    );
+    border:1px solid rgba(142,202,230,.35);
+  }
+  .escala i{
+    position:absolute; top:0; left:0; bottom:0;
+    background:var(--azul-linea);
+    display:block;
+  }
+
+  /* ============================================================
+     EXPERIENCIA — línea de cota vertical
+     ============================================================ */
+  .linea-tiempo{ position:relative; padding-left:28px; }
+  .linea-tiempo::before{
+    content:""; position:absolute; left:5px; top:6px; bottom:6px; width:1px;
+    background:var(--azul-linea);
+  }
+  .item-exp{ position:relative; padding-bottom:38px; }
+  .item-exp:last-child{ padding-bottom:0; }
+  .item-exp::before{
+    content:""; position:absolute; left:-28px; top:4px;
+    width:11px; height:11px;
+    background:var(--azul-plano);
+    border:2px solid var(--acento);
+  }
+  .item-exp .periodo{
+    font-family:'Space Mono', monospace; font-size:11px; color:var(--azul-linea);
+  }
+  .item-exp h3{ font-size:17px; margin:6px 0 2px; }
+  .item-exp .empresa{ color:var(--acento); font-size:13px; margin:0 0 10px; }
+  .item-exp p.desc{ color:var(--slate); margin:0 0 10px; max-width:65ch; }
+  .tags{ display:flex; flex-wrap:wrap; gap:8px; }
+  .tags span{
+    font-family:'Space Mono', monospace; font-size:10.5px;
+    border:1px solid rgba(142,202,230,.4);
+    color:var(--slate);
+    padding:3px 8px;
+  }
+
+  /* ============================================================
+     PROYECTOS — paneles tipo ficha de diagrama
+     ============================================================ */
+  .proyectos-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+    gap:22px;
+  }
+  .proyecto{
+    display:flex; flex-direction:column;
+    transition:border-color .15s ease;
+  }
+  .proyecto:hover{ border-color:var(--acento); }
+  .proyecto h3{ font-size:16px; margin:0 0 8px; }
+  .proyecto p{ color:var(--slate); font-size:14px; margin:0 0 14px; flex:1; }
+  .proyecto .tags{ margin-bottom:14px; }
+  .proyecto a{
+    font-family:'Space Mono', monospace; font-size:12px;
+    text-decoration:none; color:var(--acento);
+  }
+  .proyecto a:hover{ text-decoration:underline; }
+
+  /* ============================================================
+     EDUCACIÓN
+     ============================================================ */
+  .educacion-item{
+    display:grid; grid-template-columns:120px 1fr;
+    gap:20px;
+    padding:16px 0;
+    border-bottom:1px solid rgba(142,202,230,.2);
+  }
+  .educacion-item:last-child{ border-bottom:none; }
+  .educacion-item .periodo{ font-family:'Space Mono',monospace; font-size:11px; color:var(--azul-linea); }
+  .educacion-item h3{ font-size:15px; margin:0 0 4px; }
+  .educacion-item p{ margin:0; color:var(--slate); font-size:13px; }
+
+  /* ============================================================
+     CONTACTO — sello final
+     ============================================================ */
+  #contacto{ padding-bottom:90px; }
+  .contacto-panel{
+    display:flex; flex-wrap:wrap; gap:26px;
+    align-items:center; justify-content:space-between;
+  }
+  .contacto-panel h2{ margin:0; font-size:20px; border:none; }
+  .contacto-lista{ display:flex; flex-wrap:wrap; gap:22px; }
+  .contacto-lista a{
+    display:flex; align-items:center; gap:8px;
+    text-decoration:none; color:var(--papel);
+    font-size:14px;
+  }
+  .contacto-lista a:hover{ color:var(--acento); }
+
+  footer{
+    text-align:center;
+    padding:22px 0 40px;
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    color:var(--slate);
+    position:relative; z-index:1;
+  }
+
+  /* ============================================================
+     Animación de entrada — un único momento orquestado
+     ============================================================ */
+  @keyframes dibujar{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  #inicio .foto-marco{ animation:dibujar .6s ease both; }
+  #inicio .etiqueta{ animation:dibujar .6s .08s ease both; }
+  #inicio h1{ animation:dibujar .6s .16s ease both; }
+  #inicio .rol{ animation:dibujar .6s .24s ease both; }
+  #inicio p.pitch{ animation:dibujar .6s .32s ease both; }
+  #inicio .ficha{ animation:dibujar .6s .4s ease both; }
+  #inicio .botones{ animation:dibujar .6s .48s ease both; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    #inicio *{ animation:none !important; }
+  }
+
+  /* ============================================================
+     Responsive
+     ============================================================ */
+  @media (max-width: 780px){
+    #nav ul{
+      position:absolute; top:64px; left:0; right:0;
+      flex-direction:column; gap:0;
+      background:var(--azul-panel);
+      border-bottom:1px solid var(--azul-linea);
+      max-height:0; overflow:hidden;
+      transition:max-height .25s ease;
+    }
+    #nav ul.abierto{ max-height:400px; }
+    #nav ul li{ border-top:1px solid rgba(142,202,230,.15); }
+    #nav ul a{ display:block; padding:14px 28px; border-bottom:none; }
+    #nav-toggle{ display:block; }
+
+    .hero{ grid-template-columns:1fr; }
+    .foto-marco{ max-width:220px; }
+    .habilidades-grid{ grid-template-columns:1fr; }
+    .educacion-item{ grid-template-columns:1fr; }
+    .ficha{ grid-template-columns:1fr 1fr; }
+  }
+
+  /* Foco visible para accesibilidad de teclado */
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--acento); outline-offset:2px;
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap">
+    <div class="marca">MR.<span>_</span>THE<span>.</span>MISTER</div>
+    <button id="nav-toggle" aria-label="Abrir menú" aria-expanded="false">≡</button>
+    <ul id="nav-lista">
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#sobre-mi">Sobre mí</a></li>
+      <li><a href="#habilidades">Habilidades</a></li>
+      <li><a href="#experiencia">Experiencia</a></li>
+      <li><a href="#proyectos">Proyectos</a></li>
+      <li><a href="#educacion">Educación</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ============ INICIO / HERO ============ -->
+  <section id="inicio">
+    <div class="hero">
+      <div class="foto-marco" id="foto-marco">
+        <!-- Reemplaza este bloque por: <img src="tu-foto.jpg" alt="Foto de [juan castillo]"> -->
+        <div class="placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg>
+          TU FOTO<br>AQUÍ<br>(400×400px)
+        </div>
+      </div>
+      <div class="hero-info">
+        <span class="etiqueta">FICHA · 001 / PERFIL</span>
+        <h1 id="dato-nombre">juanmiguel castillo lemus</h1>
+        <p class="rol" id="dato-rol">// Ingeniero de Software</p>
+        <p class="pitch" id="dato-pitch">
+          Desarrollador de software con enfoque en construir soluciones sólidas y mantenibles.
+          Escribe aquí una o dos frases sobre tu experiencia, tu especialidad
+          (backend, frontend, datos, móvil...) y lo que buscas en tu próximo reto.
+        </p>
+        <div class="ficha" id="ficha-datos">
+          <div><strong>UBICACIÓN</strong><span id="dato-ubicacion">medellin,collombia</span></div>
+          <div><strong>EXPERIENCIA</strong><span id="dato-experiencia">1 años</span></div>
+          <div><strong>DISPONIBILIDAD</strong><span id="dato-disponibilidad">Inmediata</span></div>
+        </div>
+        <div class="botones">
+          <a class="btn primario" href="#contacto">Contáctame</a>
+          <a class="btn" href="#" id="link-cv-pdf" target="_blank">Descargar CV (PDF)</a>
+          <a class="btn" href="#" id="link-github" target="_blank">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SOBRE MÍ ============ -->
+  <section id="sobre-mi">
+    <h2>Sobre mí <small>01</small></h2>
+    <div class="panel sobre-mi">
+      <span class="esq-br"></span><span class="esq-bi"></span>
+      <p id="texto-sobre-mi">
+        <strong>[juan castillo]</strong> Un año como ingeniero se resume en; pase de resolver problemas con respuestas al final del libro a enfrentarte a retos reales donde no hay un manual exacto.
+
+En estos primeros doce meses, el mayor aprendizaje no ha sido la teoría, sino la capacidad de adaptarte. Descubri que equivocarse rápido forma parte del proceso, que preguntar a tiempo ahorra días de trabajo y que la verdadera ingeniería empieza cuando algo no sale como lo planificaste y logras hacerlo funcionar. Pasaste de sentirte un principiante a confiar en tu criterio para transformar problemas en soluciones.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ HABILIDADES ============ -->
+  <section id="habilidades">
+    <h2>Habilidades <small>02</small></h2>
+    <div class="habilidades-grid" id="contenedor-habilidades"></div>
+  </section>
+
+  <!-- ============ EXPERIENCIA ============ -->
+  <section id="experiencia">
+    <h2>Experiencia <small>03</small></h2>
+    <div class="linea-tiempo" id="contenedor-experiencia"></div>
+  </section>
+
+  <!-- ============ PROYECTOS ============ -->
+  <section id="proyectos">
+    <h2>Proyectos <small>04</small></h2>
+    <div class="proyectos-grid" id="contenedor-proyectos"></div>
+  </section>
+
+  <!-- ============ EDUCACIÓN ============ -->
+  <section id="educacion">
+    <h2>Educación <small>05</small></h2>
+    <div class="panel" id="contenedor-educacion" style="padding:28px 32px;">
+      <span class="esq-br"></span><span class="esq-bi"></span>
+    </div>
+  </section>
+
+  <!-- ============ CONTACTO ============ -->
+  <section id="contacto">
+    <h2>Contacto <small>06</small></h2>
+    <div class="panel contacto-panel">
+      <span class="esq-br"></span><span class="esq-bi"></span>
+      <h2>¿Hablamos?</h2>
+      <div class="contacto-lista" id="contenedor-contacto"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © <span id="anio"></span> · Construido con HTML, CSS y JavaScript
+</footer>
+
+<script>
+/* ================================================================
+   CONFIG — edita SOLO estos datos con tu información real.
+   No necesitas tocar el HTML ni el CSS para actualizar el CV.
+   ================================================================ */
+const CONFIG = {
+  nombre: "Juan Castillo",
+  rol: "Ingeniero de Software",
+  ubicacion: "medellin, colombia",
+  experienciaAnios: "1 años",
+  disponibilidad: "Inmediata",
+  email: "juanmcastillo2121@gmail.com",
+  telefono: "+00 000 00 00",
+  linkedin: "https://linkedin.com/in/tu-usuario",
+  github: "https://github.com/tu-usuario",
+  cvPdf: "#", // enlace a tu CV en PDF, si tienes uno
+
+  habilidades: [
+    {
+      categoria: "Lenguajes",
+      items: [
+        { nombre: "JavaScript", nivel: 85 },
+        { nombre: "Python", nivel: 75 },
+        { nombre: "Java", nivel: 65 },
+      ]
+    },
+    {
+      categoria: "Herramientas y otros",
+      items: [
+        { nombre: "Git / GitHub", nivel: 80 },
+        { nombre: "SQL", nivel: 70 },
+        { nombre: "Metodologías ágiles", nivel: 65 },
+      ]
+    }
+  ],
+
+  experiencia: [
+    {
+      periodo: "2026 — Actualidad",
+      cargo: "Estudiante",
+      empresa: "Maria cano",
+      descripcion: "Estoy en un proceso formativo eduactivo en el cual refuerzo mis habilidades y aprendo en el entorno y aprender nuevas abilidades.",
+      tags: ["Tecnología 1", "Tecnología 2", "Tecnología 3"]
+    },
+    {
+      periodo: "2026 — 2026",
+      cargo: "Estudiante",
+      empresa: "Maria cano",
+      descripcion: "Inicio de mi proceso de formacion universitario.",
+      tags: ["Tecnología 1", "Tecnología 2"]
+    }
+  ],
+
+  proyectos: [
+    {
+      titulo: "Paguina wed sapia",
+      descripcion: "es una paguina que sirve para reportar casos de desastres ambientales reciclajes entre otos.",
+      tags: ["React", "Node.js"],
+      link: "#"
+    },
+    {
+      titulo: "Mercado digital",
+      descripcion: "Es una paguina de simulacion de compra digital.",
+      tags: ["Python", "API REST"],
+      link: "#"
+    },
+    {
+      titulo: "Proyecto académico",
+      descripcion: "plataforma de idioma; para praticar, aprender y desarrollar abilidades.",
+      tags: ["Java", "SQL"],
+      link: "#"
+    }
+  ],
+
+  educacion: [
+    {
+      periodo: "20XX — 20XX",
+      titulo: "Ingeniería de Software / Sistemas",
+      institucion: "Fundacion universitaria Maria cono"
+    },
+    {
+      periodo: "20XX",
+      titulo: "Tecnico en sistemas teleinformaticos",
+      institucion: "Sena colombia"
+    }
+  ]
+};
+
+/* ================================================================
+   Renderizado — toma CONFIG y arma el DOM. No necesitas editar
+   esta parte para actualizar tu información.
+   ================================================================ */
+function renderizarCV(c){
+  document.getElementById("dato-nombre").textContent = c.nombre;
+  document.getElementById("dato-rol").textContent = "// " + c.rol;
+  document.getElementById("dato-ubicacion").textContent = c.ubicacion;
+  document.getElementById("dato-experiencia").textContent = c.experienciaAnios;
+  document.getElementById("dato-disponibilidad").textContent = c.disponibilidad;
+  document.getElementById("link-cv-pdf").href = c.cvPdf;
+  document.getElementById("link-github").href = c.github;
+  document.title = c.nombre + " · " + c.rol;
+
+  // Habilidades
+  const hab = document.getElementById("contenedor-habilidades");
+  hab.innerHTML = c.habilidades.map(grupo => `
+    <div class="grupo-hab">
+      <h3>${grupo.categoria}</h3>
+      ${grupo.items.map(item => `
+        <div class="barra">
+          <div class="fila-top"><span>${item.nombre}</span><span>${item.nivel}%</span></div>
+          <div class="escala"><i style="width:${item.nivel}%"></i></div>
+        </div>
+      `).join("")}
+    </div>
+  `).join("");
+
+  // Experiencia
+  const exp = document.getElementById("contenedor-experiencia");
+  exp.innerHTML = c.experiencia.map(e => `
+    <div class="item-exp">
+      <div class="periodo">${e.periodo}</div>
+      <h3>${e.cargo}</h3>
+      <p class="empresa">${e.empresa}</p>
+      <p class="desc">${e.descripcion}</p>
+      <div class="tags">${e.tags.map(t => `<span>${t}</span>`).join("")}</div>
+    </div>
+  `).join("");
+
+  // Proyectos
+  const proy = document.getElementById("contenedor-proyectos");
+  proy.innerHTML = c.proyectos.map(p => `
+    <div class="panel proyecto">
+      <span class="esq-br"></span><span class="esq-bi"></span>
+      <h3>${p.titulo}</h3>
+      <p>${p.descripcion}</p>
+      <div class="tags">${p.tags.map(t => `<span>${t}</span>`).join("")}</div>
+      <a href="${p.link}" target="_blank" rel="noopener">Ver proyecto →</a>
+    </div>
+  `).join("");
+
+  // Educación
+  const edu = document.getElementById("contenedor-educacion");
+  edu.innerHTML = c.educacion.map(e => `
+    <div class="educacion-item">
+      <div class="periodo">${e.periodo}</div>
+      <div>
+        <h3>${e.titulo}</h3>
+        <p>${e.institucion}</p>
+      </div>
+    </div>
+  `).join("");
+
+  // Contacto
+  const cont = document.getElementById("contenedor-contacto");
+  cont.innerHTML = `
+    <a href="mailto:${c.email}">✉ ${c.email}</a>
+    <a href="tel:${c.telefono.replace(/\s+/g,'')}">☎ ${c.telefono}</a>
+    <a href="${c.linkedin}" target="_blank" rel="noopener">in LinkedIn</a>
+    <a href="${c.github}" target="_blank" rel="noopener">⌥ GitHub</a>
+  `;
+
+  document.getElementById("anio").textContent = new Date().getFullYear();
+}
+
+renderizarCV(CONFIG);
+
+/* ================================================================
+   Navegación: menú móvil, scroll suave y resaltado de sección activa
+   ================================================================ */
+const toggle = document.getElementById("nav-toggle");
+const listaNav = document.getElementById("nav-lista");
+toggle.addEventListener("click", () => {
+  const abierto = listaNav.classList.toggle("abierto");
+  toggle.setAttribute("aria-expanded", abierto);
+});
+listaNav.querySelectorAll("a").forEach(a => {
+  a.addEventListener("click", () => listaNav.classList.remove("abierto"));
+});
+
+const enlaces = document.querySelectorAll("#nav a");
+const secciones = document.querySelectorAll("main section");
+const observador = new IntersectionObserver((entradas) => {
+  entradas.forEach(entrada => {
+    if(entrada.isIntersecting){
+      const id = entrada.target.getAttribute("id");
+      enlaces.forEach(a => {
+        a.classList.toggle("activo", a.getAttribute("href") === "#" + id);
+      });
+    }
+  });
+}, { rootMargin: "-45% 0px -50% 0px" });
+secciones.forEach(s => observador.observe(s));
+</script>
+</body>
+</html>
